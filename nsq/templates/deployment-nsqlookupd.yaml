@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nsqlookupd.fullname" . }}
+  labels:
+    {{ include "nsqlookupd.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.nsqlookupd.replicaCount }}
+  revisionHistoryLimit: {{ .Values.nsqlookupd.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "nsqlookupd.labels" . | nindent 6 }}
+{{- with .Values.nsqlookupd.updateStrategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "nsqlookupd.labels" . | nindent 8 }}
+    spec:
+    {{- with .Values.nsqlookupd.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nsqlookupd.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nsqlookupd.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - command:
+        - /nsqlookupd
+        name: {{ include "nsqlookupd.name" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: tcp-port
+          containerPort: {{ .Values.nsqlookupd.tcp_port | default "4160" }}
+          protocol: TCP
+        - name: http-port
+          containerPort: {{ .Values.nsqlookupd.http_port | default "4161" }}
+          protocol: TCP
+
+      {{- with .Values.nsqlookupd.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .Values.nsqlookupd.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}

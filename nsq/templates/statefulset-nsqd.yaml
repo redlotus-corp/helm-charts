@@ -3,10 +3,10 @@ kind: StatefulSet
 metadata:
   name: {{ include "nsqd.fullname" . }}
   labels:
-{{ include "nsqd.labels" . | indent 4 }}
+    {{- include "nsqd.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  replicas: {{ .Values.nsqd.replicaCount }}
+  revisionHistoryLimit: {{ .Values.nsqd.revisionHistoryLimit }}
   podManagementPolicy: {{ .Values.nsqd.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.nsqd.updateStrategy }}
@@ -24,32 +24,24 @@ spec:
   template:
     metadata:
       labels:
-{{ include "nsqd.labels" . | indent 8 }}
-
+        {{- include "nsqd.labels" . | nindent 8 }}
     spec:
-
-    {{- if .Values.nsqd.nodeSelector }}
+    {{- with .Values.nsqd.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nsqd.nodeSelector | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
-
-    {{- if .Values.nsqd.tolerations }}
-      tolerations:
-{{ toYaml .Values.nsqd.tolerations | indent 8 }}
-    {{- end }}
-
-    {{- if .Values.nsqd.affinity }}
+    {{- with .Values.nsqd.affinity }}
       affinity:
-{{ toYaml .Values.nsqd.affinity | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
-
-    {{- if .Values.imagePullSecrets }}
+    {{- with .Values.nsqd.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-    {{- range .Values.imagePullSecrets }}
-        - name: {{ . | quote }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- end }}
-
       containers:
       - command:
         - /bin/sh
@@ -65,7 +57,7 @@ spec:
               fieldPath: status.podIP
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        name: {{ include "nsqd.fullname" . }}
+        name: {{ include "nsqd.name" . }}
         ports:
         - name: tcp-port
           containerPort: {{ .Values.nsqd.tcp_port | default "4150" }}
@@ -76,25 +68,13 @@ spec:
         - name: https-port
           containerPort: {{ .Values.nsqd.https_port | default "4152" }}
           protocol: TCP
-      {{- if .Values.nsqd.livenessProbe.enabled }}
+      {{- with .Values.nsqd.livenessProbe }}
         livenessProbe:
-          tcpSocket:
-            port: {{ .Values.nsqd.tcp_port }}
-          initialDelaySeconds: {{ .Values.nsqd.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.nsqd.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.nsqd.livenessProbe.timeoutSeconds }}
-          failureThreshold: {{ .Values.nsqd.livenessProbe.failureThreshold }}
-          successThreshold: {{ .Values.nsqd.livenessProbe.successThreshold }}
+          {{- toYaml . | nindent 10 }}
       {{- end }}
-      {{- if .Values.nsqd.readinessProbe.enabled }}
+      {{- with .Values.nsqd.readinessProbe }}
         readinessProbe:
-          tcpSocket:
-            port: {{ .Values.nsqd.tcp_port }}
-          initialDelaySeconds: {{ .Values.nsqd.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.nsqd.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.nsqd.readinessProbe.timeoutSeconds }}
-          failureThreshold: {{ .Values.nsqd.readinessProbe.failureThreshold }}
-          successThreshold: {{ .Values.nsqd.readinessProbe.successThreshold }}
+          {{- toYaml . | nindent 10 }}
       {{- end }}
         volumeMounts:
         - name: {{ include "nsqd.fullname" . }}-data

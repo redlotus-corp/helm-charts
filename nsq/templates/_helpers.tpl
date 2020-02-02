@@ -31,17 +31,18 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Common labels
-*/}}
-{{- define "nsq.labels" -}}
-app.kubernetes.io/name: {{ include "nsq.name" . }}
+{{- define "nsq.labels.common" -}}
 helm.sh/chart: {{ include "nsq.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{- define "nsq.labels" -}}
+app.kubernetes.io/name: {{ include "nsq.name" . }}
+{{ include "nsq.labels.common" . -}}
 {{- end -}}
 
 {{/* -----------------------[ NSQd ]------------------------- */}}
@@ -54,17 +55,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- include "nsq.fullname" . -}}-nsqd
 {{- end -}}
 
-{{/*
-Common labels
-*/}}
 {{- define "nsqd.labels" -}}
 app.kubernetes.io/name: {{ include "nsqd.name" . }}
-helm.sh/chart: {{ include "nsq.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "nsq.labels.common" . -}}
 {{- end -}}
 
 {{/*
@@ -80,3 +73,17 @@ if .Values.nsqd.path is empty, default value "/nsqd-data".
 {{- end -}}
 
 {{/* -----------------------[ NSQlookupd ]------------------------- */}}
+
+{{- define "nsqlookupd.name" -}}
+{{- include "nsq.name" . -}}-nsqlookupd
+{{- end -}}
+
+{{- define "nsqlookupd.fullname" -}}
+{{- include "nsq.fullname" . -}}-nsqlookupd
+{{- end -}}
+
+{{- define "nsqlookupd.labels" -}}
+app.kubernetes.io/name: {{ include "nsqlookupd.name" . }}
+{{ include "nsq.labels.common" . -}}
+{{- end -}}
+

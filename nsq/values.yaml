@@ -12,12 +12,8 @@ image:
 
 imagePullSecrets: []
 
-nameOverride: ""
-fullnameOverride: ""
-
-service:
-  type: ClusterIP
-  port: 80
+nameOverride: "nsq"
+fullnameOverride: "nsq"
 
 ingress:
   enabled: false
@@ -47,6 +43,12 @@ resources: {}
 
 nsqd:
 
+  ## Number of replicas
+  replicaCount: 3
+
+  ## Limit of revisions history
+  revisionHistoryLimit: 5
+
   ## StatefulSet controller supports relax its ordering guarantees while preserving its uniqueness and identity guarantees. There are two valid pod management policies: OrderedReady and Parallel
   ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
   ##
@@ -62,37 +64,37 @@ nsqd:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   ##
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
+  #nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  #tolerations: []
   #
   ## NSQd pod/node affinity/anti-affinity
   ##
-  affinity:
-#    nodeAffinity:
-## EXAMPLES:
-#      requiredDuringSchedulingIgnoredDuringExecution:
-#        nodeSelectorTerms:
-#          - matchExpressions:
-#              - key: cloud.google.com/gke-preemptible
-#                operator: NotIn
-#                values:
-#                  - 'true'
-#    podAntiAffinity:
-#      requiredDuringSchedulingIgnoredDuringExecution:
-#        - labelSelector:
-#            matchExpressions:
-#              - key: app
-#                operator: In
-#                values:
-#                  - nsq
-#          topologyKey: kubernetes.io/hostname
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#      nodeSelectorTerms:
-#      - matchExpressions:
-#        - key: "application/clickhouse"
-#          operator: In
-#          values:
-#          - "true"
+  #affinity:
+  #  nodeAffinity:
+  ## EXAMPLES:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #        - matchExpressions:
+  #            - key: cloud.google.com/gke-preemptible
+  #              operator: NotIn
+  #              values:
+  #                - 'true'
+  #  podAntiAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      - labelSelector:
+  #          matchExpressions:
+  #            - key: app
+  #              operator: In
+  #              values:
+  #                - nsq
+  #        topologyKey: kubernetes.io/hostname
+  #  requiredDuringSchedulingIgnoredDuringExecution:
+  #    nodeSelectorTerms:
+  #    - matchExpressions:
+  #      - key: "application/clickhouse"
+  #        operator: In
+  #        values:
+  #        - "true"
 
   ## Partition update strategy
   ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
@@ -112,22 +114,24 @@ nsqd:
   ## Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
   ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   livenessProbe:
-    enabled: true
-    initialDelaySeconds: "30"
-    periodSeconds: "30"
-    timeoutSeconds: "5"
-    failureThreshold: "3"
-    successThreshold: "1"
+    tcpSocket:
+      port: 4150
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated.
   ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   readinessProbe:
-    enabled: true
-    initialDelaySeconds: "30"
-    periodSeconds: "30"
-    timeoutSeconds: "5"
-    failureThreshold: "3"
-    successThreshold: "1"
+    tcpSocket:
+      port: 4150
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
 
   path: /nsqd-data
 
@@ -152,3 +156,89 @@ nsqd:
   ## https://www.terraform.io/docs/providers/kubernetes/r/storage_class.html
   ## https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
 
+nsqlookupd:
+
+  ## Number of replicas
+  replicaCount: 3
+
+  ## Limit of revisions history
+  revisionHistoryLimit: 5
+
+  ##
+  ## The deployment strategy to use to replace existing pods with new ones.
+  updateStrategy:
+    ##
+    ## Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
+    type: RollingUpdate
+    rollingUpdate:
+      ##
+      ## The maximum number of pods that can be scheduled above the desired number of pods.
+      maxSurge: 3
+      ##
+      ## The maximum number of pods that can be unavailable during the update.
+      maxUnavailable: 1
+
+  ## NSQlookupd ports:
+  ## https://nsq.io/components/nsqlookupd.html
+  ##
+  tcp_port: 4160
+  http_port: 4161
+
+  ##
+  ## NSQlookupd Node selectors and tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ##
+  #nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  #tolerations: []
+  #
+  ## NSQlookupd pod/node affinity/anti-affinity
+  ##
+  #affinity:
+  #  nodeAffinity:
+  ## EXAMPLES:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #        - matchExpressions:
+  #            - key: cloud.google.com/gke-preemptible
+  #              operator: NotIn
+  #              values:
+  #                - 'true'
+  #  podAntiAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      - labelSelector:
+  #          matchExpressions:
+  #            - key: app
+  #              operator: In
+  #              values:
+  #                - nsq
+  #        topologyKey: kubernetes.io/hostname
+  #  requiredDuringSchedulingIgnoredDuringExecution:
+  #    nodeSelectorTerms:
+  #    - matchExpressions:
+  #      - key: "application/clickhouse"
+  #        operator: In
+  #        values:
+  #        - "true"
+
+  ## Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
+  ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+  livenessProbe:
+    tcpSocket:
+      port: 4160
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+
+  ## Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated.
+  ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+  readinessProbe:
+    tcpSocket:
+      port: 4160
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
