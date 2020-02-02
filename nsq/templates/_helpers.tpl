@@ -43,3 +43,40 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/* -----------------------[ NSQd ]------------------------- */}}
+
+{{- define "nsqd.name" -}}
+{{- include "nsq.name" . -}}-nsqd
+{{- end -}}
+
+{{- define "nsqd.fullname" -}}
+{{- include "nsq.fullname" . -}}-nsqd
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "nsqd.labels" -}}
+app.kubernetes.io/name: {{ include "nsqd.name" . }}
+helm.sh/chart: {{ include "nsq.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Create NSQd path.
+if .Values.nsqd.path is empty, default value "/nsqd-data".
+*/}}
+{{- define "nsqd.fullpath" -}}
+{{- if .Values.nsqd.path -}}
+{{- .Values.nsqd.path | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s" "/nsqd-data" -}}
+{{- end -}}
+{{- end -}}
+
+{{/* -----------------------[ NSQlookupd ]------------------------- */}}

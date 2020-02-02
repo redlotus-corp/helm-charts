@@ -6,11 +6,12 @@ replicaCount: 1
 revisionHistoryLimit: 5
 
 image:
-  repository: nginx
-  tag: stable
+  repository: nsqio/nsq
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -44,8 +45,110 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-nodeSelector: {}
+nsqd:
 
-tolerations: []
+  ## StatefulSet controller supports relax its ordering guarantees while preserving its uniqueness and identity guarantees. There are two valid pod management policies: OrderedReady and Parallel
+  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
+  ##
+  podManagementPolicy: "Parallel"
 
-affinity: {}
+  ## StatefulSet controller supports automated updates. There are two valid update strategies: RollingUpdate and OnDelete
+  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  ##
+  updateStrategy: "RollingUpdate"
+
+  ##
+  ## NSQd Node selectors and tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ##
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+  #
+  ## NSQd pod/node affinity/anti-affinity
+  ##
+  affinity:
+#    nodeAffinity:
+## EXAMPLES:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#          - matchExpressions:
+#              - key: cloud.google.com/gke-preemptible
+#                operator: NotIn
+#                values:
+#                  - 'true'
+#    podAntiAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        - labelSelector:
+#            matchExpressions:
+#              - key: app
+#                operator: In
+#                values:
+#                  - nsq
+#          topologyKey: kubernetes.io/hostname
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#      nodeSelectorTerms:
+#      - matchExpressions:
+#        - key: "application/clickhouse"
+#          operator: In
+#          values:
+#          - "true"
+
+  ## Partition update strategy
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
+  ##
+  # rollingUpdatePartition:
+
+  ## NSQd ports:
+  ## https://nsq.io/components/nsqd.html
+  ##
+  tcp_port: 4150
+  http_port: 4151
+  https_port: 4152
+
+  mem_queue_size: 200000
+  msg_timeout: "5m0s"
+
+  ## Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
+  ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: "30"
+    periodSeconds: "30"
+    timeoutSeconds: "5"
+    failureThreshold: "3"
+    successThreshold: "1"
+
+  ## Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated.
+  ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: "30"
+    periodSeconds: "30"
+    timeoutSeconds: "5"
+    failureThreshold: "3"
+    successThreshold: "1"
+
+  path: /nsqd-data
+
+  ## volumeClaimTemplates is a list of claims that pods are allowed to reference.
+  ## The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod.
+  ## Every claim in this list must have at least one matching (by name) volumeMount in one container in the template.
+  ## A claim in this list takes precedence over any volumes in the template, with the same name.
+  persistentVolumeClaim:
+    enabled: false
+    ## NSQd data volume
+    dataPersistentVolume:
+      enabled: false
+      accessModes:
+      - "ReadWriteOnce"
+      storageClassName: "-"
+      storage: "1Gi"
+      volumeMode: "Filesystem"
+
+  ## A way to specify reclaim policy and so is to create a storage class
+  ## https://medium.com/faun/kubernetes-how-to-set-reclaimpolicy-for-persistentvolumeclaim-7eb7d002bb2e
+  ## https://kubernetes.io/docs/concepts/storage/storage-classes/
+  ## https://www.terraform.io/docs/providers/kubernetes/r/storage_class.html
+  ## https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
+
