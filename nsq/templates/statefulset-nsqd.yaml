@@ -46,8 +46,9 @@ spec:
       - command:
         - /bin/sh
         - -c
-        - /nsqd --lookupd-tcp-address=nsqlookup-0.nsqlookup:4160 --lookupd-tcp-address=nsqlookup-1.nsqlookup:4160
-          --lookupd-tcp-address=nsqlookup-2.nsqlookup:4160 -broadcast-address=$POD_IP
+        # FIXME: need to generate nsqlookup addresses
+        - /nsqd --lookupd-tcp-address=nsqlookup-0.nsq-nsqlookupd:4160 --lookupd-tcp-address=nsqlookup-1.nsq-nsqlookupd:4160
+          --lookupd-tcp-address=nsqlookup-2.nsq-nsqlookupd:4160 -broadcast-address=$POD_IP
           --data-path=/nsqd-data --mem-queue-size={{ .Values.nsqd.mem_queue_size }} -msg-timeout "{{ .Values.nsqd.msg_timeout }}"
         env:
         - name: POD_IP
