@@ -1,3 +1,6 @@
+{{- $nsqlookupdPort  := .Values.nsqlookupd.http_port -}}
+{{- $nsqlookupdPortTcp  := .Values.nsqlookupd.tcp_port -}}
+{{- $nsqName  := (include "nsq.name" .) -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -42,14 +45,27 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      initContainers:
+      - name: check-deps-ready
+        image: dadarek/wait-for-dependencies
+        command:
+        - /bin/sh
+        - /usr/local/bin/entrypoint.sh
+        {{ range $i, $e := until (.Values.nsqlookupd.replicaCount | int) }}
+        {{- printf "- %s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPort | int) }}
+        {{ end }}
       containers:
       - command:
         - /bin/sh
         - -c
-        # FIXME: need to generate nsqlookup addresses
-        - /nsqd --lookupd-tcp-address=nsqlookup-0.nsq-nsqlookupd:4160 --lookupd-tcp-address=nsqlookup-1.nsq-nsqlookupd:4160
-          --lookupd-tcp-address=nsqlookup-2.nsq-nsqlookupd:4160 -broadcast-address=$POD_IP
-          --data-path=/nsqd-data --mem-queue-size={{ .Values.nsqd.mem_queue_size }} -msg-timeout "{{ .Values.nsqd.msg_timeout }}"
+        - /nsqd
+          -broadcast-address=$(POD_IP)
+          -msg-timeout "{{ .Values.nsqd.msg_timeout }}"
+          {{range $i, $e := until (.Values.nsqlookupd.replicaCount | int) }}
+          {{- printf "--lookupd-tcp-address=%s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPortTcp | int) }}
+          {{ end }}
+          --data-path=/nsqd-data
+          --mem-queue-size={{ .Values.nsqd.mem_queue_size }}
         env:
         - name: POD_IP
           valueFrom:
@@ -80,9 +96,6 @@ spec:
         volumeMounts:
         - name: {{ include "nsqd.fullname" . }}-data
           mountPath: {{ include "nsqd.fullpath" . }}
-        securityContext:
-          privileged: true
-          runAsUser: 0
 
       volumes:
       - name: {{ include "nsqd.fullname" . }}-data
@@ -92,12 +105,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-
-{{/*      dnsPolicy: ClusterFirst*/}}
-{{/*      restartPolicy: Always*/}}
-{{/*      schedulerName: default-scheduler*/}}
-{{/*      subdomain: nsqd*/}}
-{{/*      terminationGracePeriodSeconds: 30*/}}
 
 {{- if .Values.nsqd.persistentVolumeClaim.enabled }}
   volumeClaimTemplates:

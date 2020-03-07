@@ -1,19 +1,20 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "nsq.fullname" . -}}
+{{- if .Values.nsqadmin.ingress.enabled -}}
+{{- $fullName := include "nsqadmin.fullname" . -}}
+{{- $servicePort := (.Values.nsqadmin.http_port | default "4171") -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-{{ include "nsq.labels" . | indent 4 }}
-  {{- with .Values.ingress.annotations }}
+    {{ include "nsqadmin.labels" . | nindent 4 }}
+  {{- with .Values.nsqadmin.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+{{- if .Values.nsqadmin.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .Values.nsqadmin.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -22,7 +23,7 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.nsqadmin.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

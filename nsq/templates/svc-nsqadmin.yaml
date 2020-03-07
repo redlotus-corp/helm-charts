@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nsqadmin.fullname" . }}
+  labels:
+{{ include "nsqadmin.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.nsqadmin.service.type }}
+  ports:
+  - port: {{ .Values.nsqadmin.service.port | default "8080" }}
+    targetPort: {{ .Values.nsqadmin.http_port | default "4171" }}
+    protocol: TCP
+    name: http-port
+  selector:
+{{ include "nsqadmin.labels" . | indent 4 }}

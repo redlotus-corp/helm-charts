@@ -87,3 +87,17 @@ app.kubernetes.io/name: {{ include "nsqlookupd.name" . }}
 {{ include "nsq.labels.common" . -}}
 {{- end -}}
 
+{{/* -----------------------[ NSQAdmin ]------------------------- */}}
+
+{{- define "nsqadmin.name" -}}
+{{- include "nsq.name" . -}}-nsqadmin
+{{- end -}}
+
+{{- define "nsqadmin.fullname" -}}
+{{- include "nsq.fullname" . -}}-nsqadmin
+{{- end -}}
+
+{{- define "nsqadmin.labels" -}}
+app.kubernetes.io/name: {{ include "nsqadmin.name" . }}
+{{ include "nsq.labels.common" . -}}
+{{- end -}}

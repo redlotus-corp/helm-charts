@@ -1,19 +1,26 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "nsqlookupd.fullname" . }}
   labels:
-    {{ include "nsqlookupd.labels" . | nindent 4 }}
+    {{- include "nsqlookupd.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.nsqlookupd.replicaCount }}
   revisionHistoryLimit: {{ .Values.nsqlookupd.revisionHistoryLimit }}
+  podManagementPolicy: {{ .Values.nsqlookupd.podManagementPolicy }}
+  updateStrategy:
+    type: {{ .Values.nsqlookupd.updateStrategy }}
+    {{- if (eq "Recreate" .Values.nsqlookupd.updateStrategy) }}
+    rollingUpdate: null
+    {{- else if .Values.nsqlookupd.rollingUpdatePartition }}
+    rollingUpdate:
+      partition: {{ .Values.nsqlookupd.rollingUpdatePartition }}
+    {{- end }}
   selector:
     matchLabels:
-      {{- include "nsqlookupd.labels" . | nindent 6 }}
-{{- with .Values.nsqlookupd.updateStrategy }}
-  strategy:
-    {{- toYaml . | nindent 4 }}
-{{- end }}
+      app.kubernetes.io/name: {{ include "nsqlookupd.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  serviceName: {{ include "nsqlookupd.fullname" . }}-headless
   template:
     metadata:
       labels:
@@ -38,9 +45,9 @@ spec:
       containers:
       - command:
         - /nsqlookupd
-        name: {{ include "nsqlookupd.name" . }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "nsqlookupd.name" . }}
         ports:
         - name: tcp-port
           containerPort: {{ .Values.nsqlookupd.tcp_port | default "4160" }}
@@ -48,7 +55,6 @@ spec:
         - name: http-port
           containerPort: {{ .Values.nsqlookupd.http_port | default "4161" }}
           protocol: TCP
-
       {{- with .Values.nsqlookupd.livenessProbe }}
         livenessProbe:
           {{- toYaml . | nindent 10 }}

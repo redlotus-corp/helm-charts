@@ -1,0 +1,69 @@
+{{- $nsqlookupdPort  := .Values.nsqlookupd.http_port -}}
+{{- $nsqName  := (include "nsq.name" .) -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nsqadmin.fullname" . }}
+  labels:
+    {{ include "nsqadmin.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.nsqadmin.replicaCount }}
+  revisionHistoryLimit: {{ .Values.nsqadmin.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "nsqadmin.labels" . | nindent 6 }}
+{{- with .Values.nsqadmin.updateStrategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "nsqadmin.labels" . | nindent 8 }}
+    spec:
+    {{- with .Values.nsqadmin.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nsqadmin.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nsqadmin.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      initContainers:
+      - name: check-deps-ready
+        image: dadarek/wait-for-dependencies
+        command:
+        - /bin/sh
+        - /usr/local/bin/entrypoint.sh
+        {{ range $i, $e := until (.Values.nsqlookupd.replicaCount | int) }}
+        {{- printf "- %s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPort | int) }}
+        {{ end }}
+      containers:
+      - command:
+        - /nsqadmin
+        {{ range $i, $e := until (.Values.nsqlookupd.replicaCount | int) }}
+        {{- printf "- --lookupd-http-address=%s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPort | int) }}
+        {{ end }}
+        name: {{ include "nsqadmin.name" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http-port
+          containerPort: {{ .Values.nsqadmin.http_port | default "4171" }}
+          protocol: TCP
+      {{- with .Values.nsqadmin.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .Values.nsqadmin.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
