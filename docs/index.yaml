@@ -1,0 +1,48 @@
+apiVersion: v1
+entries:
+  clickhouse:
+  - apiVersion: v1
+    appVersion: "19.14"
+    created: "2020-03-08T00:11:48.560105+02:00"
+    description: ClickHouse is an open source column-oriented database management
+      system capable of real time generation of analytical data reports using SQL
+      queries
+    digest: b911b782b1abee155d0e8173d3b4f6acd8aba0a5fd08dff0f2d363d18b0ab918
+    home: https://clickhouse.yandex/
+    icon: https://clickhouse.yandex/images/logo.png
+    keywords:
+    - clickhouse
+    - olap
+    - database
+    maintainers:
+    - email: stephan@redlotus.com
+      name: redlotuscorp
+    name: clickhouse
+    sources:
+    - https://github.com/redlotus-corp/helm-charts
+    urls:
+    - clickhouse-1.0.1.tgz
+    version: 1.0.1
+  nsq:
+  - apiVersion: v1
+    appVersion: 1.2.0
+    created: "2020-03-08T00:11:48.560663+02:00"
+    description: A realtime distributed messaging platform
+    digest: 33144c91b4c90f379e447c6729ead225cb4ece87ae1ab76cc0a5848f86817da0
+    home: https://nsq.io/
+    icon: https://nsq.io/static/img/nsq_favicon.png
+    keywords:
+    - nsq
+    - message queue
+    - messaging platform
+    - distributed messaging
+    maintainers:
+    - email: stephan@redlotus.com
+      name: redlotuscorp
+    name: nsq
+    sources:
+    - https://github.com/redlotus-corp/helm-charts
+    urls:
+    - nsq-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-03-08T00:11:48.558846+02:00"
