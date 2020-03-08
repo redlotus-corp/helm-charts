@@ -1,4 +1,3 @@
-{{- $nsqlookupdPort  := .Values.nsqlookupd.http_port -}}
 {{- $nsqlookupdPortTcp  := .Values.nsqlookupd.tcp_port -}}
 {{- $nsqName  := (include "nsq.name" .) -}}
 apiVersion: apps/v1
@@ -52,7 +51,7 @@ spec:
         - /bin/sh
         - /usr/local/bin/entrypoint.sh
         {{ range $i, $e := until (.Values.nsqlookupd.replicaCount | int) }}
-        {{- printf "- %s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPort | int) }}
+        {{- printf "- %s-nsqlookupd-%d.%s-nsqlookupd-headless:%d" $nsqName $i $nsqName ($nsqlookupdPortTcp | int) }}
         {{ end }}
       containers:
       - command:

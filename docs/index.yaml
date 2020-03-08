@@ -3,7 +3,7 @@ entries:
   clickhouse:
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-08T00:11:48.560105+02:00"
+    created: "2020-03-08T16:25:27.840868+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -26,9 +26,9 @@ entries:
   nsq:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-08T00:11:48.560663+02:00"
+    created: "2020-03-08T16:25:27.841455+02:00"
     description: A realtime distributed messaging platform
-    digest: 33144c91b4c90f379e447c6729ead225cb4ece87ae1ab76cc0a5848f86817da0
+    digest: c5bbc92494925cf9f63a2a63f4c178d9392c17938652221ffd5a02f9acd36944
     home: https://nsq.io/
     icon: https://nsq.io/static/img/nsq_favicon.png
     keywords:
@@ -45,4 +45,4 @@ entries:
     urls:
     - nsq-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-08T00:11:48.558846+02:00"
+generated: "2020-03-08T16:25:27.839201+02:00"
