@@ -7,6 +7,10 @@ metadata:
     app.kubernetes.io/name: {{ include "clickhouse.name" . }}-tabix
     app.kubernetes.io/instance: {{ .Release.Name }}-tabix
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.tabix.serviceAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   ports:
   - port: 80

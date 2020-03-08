@@ -3,7 +3,29 @@ entries:
   clickhouse:
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-08T21:15:45.259732+02:00"
+    created: "2020-03-09T00:39:13.968037+02:00"
+    description: ClickHouse is an open source column-oriented database management
+      system capable of real time generation of analytical data reports using SQL
+      queries
+    digest: 2a619c99b81caa3be4e4bac21efbcd82c9496bc3c35b9a96d869b8345bf790e2
+    home: https://clickhouse.yandex/
+    icon: https://clickhouse.yandex/images/logo.png
+    keywords:
+    - clickhouse
+    - olap
+    - database
+    maintainers:
+    - email: stephan@redlotus.com
+      name: redlotuscorp
+    name: clickhouse
+    sources:
+    - https://github.com/redlotus-corp/helm-charts
+    urls:
+    - clickhouse-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v1
+    appVersion: "19.14"
+    created: "2020-03-09T00:39:13.966236+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -26,7 +48,28 @@ entries:
   nsq:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-08T21:15:45.260435+02:00"
+    created: "2020-03-09T00:39:13.969731+02:00"
+    description: A realtime distributed messaging platform
+    digest: 5fc404bbae1712d11625433fb6e770e2d269c265bd5ba81fc1536d1cc90ac011
+    home: https://nsq.io/
+    icon: https://nsq.io/static/img/nsq_favicon.png
+    keywords:
+    - nsq
+    - message queue
+    - messaging platform
+    - distributed messaging
+    maintainers:
+    - email: stephan@redlotus.com
+      name: redlotuscorp
+    name: nsq
+    sources:
+    - https://github.com/redlotus-corp/helm-charts
+    urls:
+    - nsq-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
+    appVersion: 1.2.0
+    created: "2020-03-09T00:39:13.969143+02:00"
     description: A realtime distributed messaging platform
     digest: 529255bf8cd4401b0d5c02696133688ce2f462474f1f82a1ec8fc83ee2b5d1e1
     home: https://nsq.io/
@@ -45,4 +88,4 @@ entries:
     urls:
     - nsq-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-08T21:15:45.257978+02:00"
+generated: "2020-03-09T00:39:13.962802+02:00"

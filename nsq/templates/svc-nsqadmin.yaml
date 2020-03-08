@@ -3,7 +3,11 @@ kind: Service
 metadata:
   name: {{ include "nsqadmin.fullname" . }}
   labels:
-{{ include "nsqadmin.labels" . | indent 4 }}
+  {{ include "nsqadmin.labels" . | nindent 4 }}
+{{- with .Values.nsqadmin.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.nsqadmin.service.type }}
   ports:
