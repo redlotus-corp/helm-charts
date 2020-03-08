@@ -20,13 +20,18 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "nsqd.name" . }}
+      app: {{ include "nsqd.fullname" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   serviceName: {{ include "nsqd.fullname" . }}-headless
   template:
     metadata:
       labels:
+        app: {{ include "nsqd.fullname" . }}
         {{- include "nsqd.labels" . | nindent 8 }}
+    {{- with .Values.nsqd.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- with .Values.nsqd.nodeSelector }}
       nodeSelector:

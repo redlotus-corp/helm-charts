@@ -18,13 +18,18 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "nsqlookupd.name" . }}
+      app: {{ include "nsqlookupd.fullname" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   serviceName: {{ include "nsqlookupd.fullname" . }}-headless
   template:
     metadata:
       labels:
+        app: {{ include "nsqlookupd.fullname" . }}
         {{- include "nsqlookupd.labels" . | nindent 8 }}
+    {{- with .Values.nsqlookupd.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- with .Values.nsqlookupd.nodeSelector }}
       nodeSelector:

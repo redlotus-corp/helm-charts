@@ -22,4 +22,5 @@ spec:
     protocol: TCP
     name: https-port
   selector:
-{{ include "nsqd.labels" . | indent 4 }}
+    app: {{ include "nsqd.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

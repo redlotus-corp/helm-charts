@@ -11,7 +11,8 @@ spec:
   revisionHistoryLimit: {{ .Values.nsqadmin.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "nsqadmin.labels" . | nindent 6 }}
+      app: {{ include "nsqadmin.fullname" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 {{- with .Values.nsqadmin.updateStrategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -19,7 +20,12 @@ spec:
   template:
     metadata:
       labels:
+        app: {{ include "nsqadmin.fullname" . }}
         {{- include "nsqadmin.labels" . | nindent 8 }}
+    {{- with .Values.nsqadmin.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- with .Values.nsqadmin.nodeSelector }}
       nodeSelector:

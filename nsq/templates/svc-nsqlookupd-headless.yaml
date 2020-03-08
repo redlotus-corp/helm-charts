@@ -18,4 +18,5 @@ spec:
     protocol: TCP
     name: http-port
   selector:
-{{ include "nsqlookupd.labels" . | indent 4 }}
+    app: {{ include "nsqlookupd.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
