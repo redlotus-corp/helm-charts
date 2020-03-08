@@ -225,7 +225,7 @@ nsqlookupd:
 nsqadmin:
 
   ## Number of replicas
-  replicaCount: 1
+  replicaCount: 0
 
   ## Limit of revisions history
   revisionHistoryLimit: 5
