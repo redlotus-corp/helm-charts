@@ -4,7 +4,7 @@ description: A realtime distributed messaging platform
 home: https://nsq.io/
 icon: https://nsq.io/static/img/nsq_favicon.png
 name: nsq
-version: 0.1.2
+version: 0.1.3
 keywords:
   - nsq
   - message queue
