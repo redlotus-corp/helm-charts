@@ -3,7 +3,29 @@ entries:
   clickhouse:
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-10T15:27:20.676855+02:00"
+    created: "2020-03-10T18:32:27.949152+02:00"
+    description: ClickHouse is an open source column-oriented database management
+      system capable of real time generation of analytical data reports using SQL
+      queries
+    digest: b7ea944d1e048cf36754cdd775987f005eda18663406461eb7c1249c59cf3dc9
+    home: https://clickhouse.yandex/
+    icon: https://clickhouse.yandex/images/logo.png
+    keywords:
+    - clickhouse
+    - olap
+    - database
+    maintainers:
+    - email: stephan@redlotus.com
+      name: redlotuscorp
+    name: clickhouse
+    sources:
+    - https://github.com/redlotus-corp/helm-charts
+    urls:
+    - clickhouse-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v1
+    appVersion: "19.14"
+    created: "2020-03-10T18:32:27.947507+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -25,7 +47,7 @@ entries:
     version: 1.0.2
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-10T15:27:20.675146+02:00"
+    created: "2020-03-10T18:32:27.946037+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -48,7 +70,7 @@ entries:
   nsq:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T15:27:20.678599+02:00"
+    created: "2020-03-10T18:32:27.95222+02:00"
     description: A realtime distributed messaging platform
     digest: a7d77db583b2a169a43745140dca3ea58664a7ea330b1636be97ecaca5d0d15a
     home: https://nsq.io/
@@ -69,7 +91,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T15:27:20.67803+02:00"
+    created: "2020-03-10T18:32:27.95126+02:00"
     description: A realtime distributed messaging platform
     digest: 5fc404bbae1712d11625433fb6e770e2d269c265bd5ba81fc1536d1cc90ac011
     home: https://nsq.io/
@@ -90,7 +112,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T15:27:20.67748+02:00"
+    created: "2020-03-10T18:32:27.950202+02:00"
     description: A realtime distributed messaging platform
     digest: 529255bf8cd4401b0d5c02696133688ce2f462474f1f82a1ec8fc83ee2b5d1e1
     home: https://nsq.io/
@@ -109,4 +131,4 @@ entries:
     urls:
     - nsq-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-10T15:27:20.67383+02:00"
+generated: "2020-03-10T18:32:27.944086+02:00"

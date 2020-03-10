@@ -2,7 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.tabix.service.name }}
+  name: {{ .Values.tabix.service.name }}
+{{- else }}
   name: {{ include "clickhouse.fullname" . }}-tabix
+{{- end }}
   labels:
     app.kubernetes.io/name: {{ include "clickhouse.name" . }}-tabix
     app.kubernetes.io/instance: {{ .Release.Name }}-tabix
