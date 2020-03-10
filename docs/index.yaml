@@ -3,7 +3,7 @@ entries:
   clickhouse:
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-10T18:32:27.949152+02:00"
+    created: "2020-03-10T20:06:54.140472+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -25,7 +25,7 @@ entries:
     version: 1.0.3
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-10T18:32:27.947507+02:00"
+    created: "2020-03-10T20:06:54.137039+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -47,7 +47,7 @@ entries:
     version: 1.0.2
   - apiVersion: v1
     appVersion: "19.14"
-    created: "2020-03-10T18:32:27.946037+02:00"
+    created: "2020-03-10T20:06:54.135201+02:00"
     description: ClickHouse is an open source column-oriented database management
       system capable of real time generation of analytical data reports using SQL
       queries
@@ -70,9 +70,9 @@ entries:
   nsq:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T18:32:27.95222+02:00"
+    created: "2020-03-10T20:06:54.143483+02:00"
     description: A realtime distributed messaging platform
-    digest: a7d77db583b2a169a43745140dca3ea58664a7ea330b1636be97ecaca5d0d15a
+    digest: ccbd8560262fb12bbfd3c95fac0d37814a0232c32ee340cbd1937099ea7fc660
     home: https://nsq.io/
     icon: https://nsq.io/static/img/nsq_favicon.png
     keywords:
@@ -91,7 +91,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T18:32:27.95126+02:00"
+    created: "2020-03-10T20:06:54.1429+02:00"
     description: A realtime distributed messaging platform
     digest: 5fc404bbae1712d11625433fb6e770e2d269c265bd5ba81fc1536d1cc90ac011
     home: https://nsq.io/
@@ -112,7 +112,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-03-10T18:32:27.950202+02:00"
+    created: "2020-03-10T20:06:54.14184+02:00"
     description: A realtime distributed messaging platform
     digest: 529255bf8cd4401b0d5c02696133688ce2f462474f1f82a1ec8fc83ee2b5d1e1
     home: https://nsq.io/
@@ -131,4 +131,4 @@ entries:
     urls:
     - nsq-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-10T18:32:27.944086+02:00"
+generated: "2020-03-10T20:06:54.133364+02:00"
