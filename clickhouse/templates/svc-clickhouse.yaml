@@ -6,6 +6,10 @@ metadata:
     app.kubernetes.io/name: {{ include "clickhouse.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.clickhouse.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   ports:
   - port: {{ .Values.clickhouse.tcp_port }}
