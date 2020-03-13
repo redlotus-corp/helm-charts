@@ -4,7 +4,7 @@ description: A realtime distributed messaging platform
 home: https://hub.docker.com/r/nikepan/clickhouse-bulk/
 icon: https://clickhouse.yandex/images/logo.png
 name: clickhouse-bulk
-version: 0.1.0
+version: 0.1.1
 keywords:
   - clickhouse
   - query collector

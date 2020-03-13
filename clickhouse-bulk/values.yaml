@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: clickhouse-bulk
+  repository: nikepan/clickhouse-bulk
   tag: 1.2.5
   pullPolicy: IfNotPresent
 
