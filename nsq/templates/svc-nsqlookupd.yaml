@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nsqlookupd.fullname" . }}-service
+  labels:
+    app.kubernetes.io/name: {{ include "nsqlookupd.name" . }}-service
+{{ include "nsq.labels.common" . | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: {{ .Values.nsqlookupd.tcp_port }}
+    targetPort: tcp-port
+    protocol: TCP
+    name: tcp-port
+  - port: {{ .Values.nsqlookupd.http_port }}
+    targetPort: http-port
+    protocol: TCP
+    name: http-port
+  selector:
+    app: {{ include "nsqlookupd.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
