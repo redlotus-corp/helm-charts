@@ -28,9 +28,11 @@ spec:
             - name: http
               containerPort: 8124
               protocol: TCP
-
-          ## Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
-          ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+          env:
+          {{- range $pkey, $pval := .Values.env }}
+          - name: {{ $pkey }}
+            value: {{ quote $pval }}
+          {{- end }}
           livenessProbe:
             tcpSocket:
               port: 8124
@@ -39,9 +41,6 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
             successThreshold: 1
-
-          ## Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated.
-          ## More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
           readinessProbe:
             tcpSocket:
               port: 8124
@@ -50,20 +49,16 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
             successThreshold: 1
-
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-
-      {{- with .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-
     {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

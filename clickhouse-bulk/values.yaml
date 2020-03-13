@@ -9,6 +9,20 @@ imagePullSecrets: []
 nameOverride: "clickhouse-bulk"
 fullnameOverride: "clickhouse-bulk"
 
+env:
+  # comma separated list of servers
+  CLICKHOUSE_SERVERS: "http://1.2.3.4:8123"
+  # count of rows for insert
+  CLICKHOUSE_FLUSH_COUNT: 1000
+  # insert interval (milliseconds)
+  CLICKHOUSE_FLUSH_INTERVAL: 2000
+  # interval for try to send dumps (seconds); -1 to disable
+  DUMP_CHECK_INTERVAL: 300
+  # wait time if server is down
+  CLICKHOUSE_DOWN_TIMEOUT: 60
+  # clickhouse server connect timeout
+  CLICKHOUSE_CONNECT_TIMEOUT: 10
+
 service:
   type: ClusterIP
   port: 8124
